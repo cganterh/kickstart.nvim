@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -159,12 +159,41 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 5
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+vim.opt.colorcolumn = '72,88'
+vim.opt.autowriteall = true
+
+-- Configure diagnostic
+vim.diagnostic.config {
+  virtual_text = {
+    format = function(diagnostic)
+      return string.format(
+        '[%s: %s] %s',
+        diagnostic.source,
+        diagnostic.code or (diagnostic.user_data and diagnostic.user_data.lsp.code) or '',
+        diagnostic.message
+      )
+    end,
+  },
+}
+
+-- Use internal formatting for bindings like gq.
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    vim.bo[args.buf].formatexpr = nil
+  end,
+})
+
+vim.opt.spelllang = 'en_us'
+vim.opt.spell = true
+vim.opt.spellcapcheck = ''
+vim.opt.foldmethod = 'indent'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -204,6 +233,24 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- Custom keymaps
+
+vim.keymap.set('n', '<leader>gf', '<cmd>G|on|Neotree<CR><C-w>w/^$<CR>2j<cmd>nohlsearch<CR>', { desc = '[G]it [F]ugitive' })
+vim.keymap.set('n', '<leader>gp', '<cmd>G push<CR>', { desc = '[G]it [P]ush' })
+
+vim.keymap.set('n', '<leader>eo', '<cmd>set textwidth=0|echo "textwidth off"<CR>', { desc = 'T[e]xt width [O]ff' })
+vim.keymap.set('n', '<leader>e0', '<cmd>set textwidth=0|echo "textwidth off"<CR>', { desc = 'T[e]xt width [O]ff' })
+vim.keymap.set('n', '<leader>e7', '<cmd>set textwidth=72|echo "textwidth = 72"<CR>', { desc = 'T[e]xt width [7]2' })
+vim.keymap.set('n', '<leader>e8', '<cmd>set textwidth=88|echo "textwidth = 88"<CR>', { desc = 'T[e]xt width [8]8' })
+
+vim.keymap.set('n', '<leader>jj', '<cmd>!jj st<CR>', { desc = '[j][j] status' })
+vim.keymap.set('n', '<leader>jl', '<cmd>!jj log<CR>', { desc = '[j]j [l]og' })
+vim.keymap.set('n', '<leader>jn', '<cmd>!jj new<CR>', { desc = '[j]j [n]ew' })
+vim.keymap.set('n', '<leader>jd', '<cmd>term<CR>ijj describe<CR>', { desc = '[j]j [d]escribe' })
+vim.keymap.set('n', '<leader>ji', '<cmd>term<CR>ijj diff<CR>', { desc = '[j]j d[i]ff' })
+vim.keymap.set('n', '<leader>js', '<cmd>term<CR>ijj split<CR>', { desc = '[j]j [s]plit' })
+vim.keymap.set('n', '<leader>jq', '<cmd>term<CR>ijj squash<CR>', { desc = '[j]j s[q]uash' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -246,6 +293,247 @@ rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      bigfile = { enabled = true },
+      dashboard = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+      },
+      picker = { enabled = true },
+      quickfile = { enabled = true },
+      scroll = { enabled = false },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+      styles = {
+        notification = {
+          -- wo = { wrap = true } -- Wrap notifications
+        },
+      },
+    },
+    keys = {
+      {
+        '<leader>z',
+        function()
+          Snacks.zen()
+        end,
+        desc = 'Toggle Zen Mode',
+      },
+      {
+        '<leader>Z',
+        function()
+          Snacks.zen.zoom()
+        end,
+        desc = 'Toggle Zoom',
+      },
+      {
+        '<leader>.',
+        function()
+          Snacks.scratch()
+        end,
+        desc = 'Toggle Scratch Buffer',
+      },
+      {
+        '<leader>S',
+        function()
+          Snacks.scratch.select()
+        end,
+        desc = 'Select Scratch Buffer',
+      },
+      {
+        '<leader>n',
+        function()
+          Snacks.notifier.show_history()
+        end,
+        desc = 'Notification History',
+      },
+      {
+        '<leader>bd',
+        function()
+          Snacks.bufdelete()
+        end,
+        desc = 'Delete Buffer',
+      },
+      {
+        '<leader>cR',
+        function()
+          Snacks.rename.rename_file()
+        end,
+        desc = 'Rename File',
+      },
+      -- {
+      --   '<leader>gB',
+      --   function()
+      --     Snacks.gitbrowse()
+      --   end,
+      --   desc = 'Git Browse',
+      --   mode = { 'n', 'v' },
+      -- },
+      -- {
+      --   '<leader>gb',
+      --   function()
+      --     Snacks.git.blame_line()
+      --   end,
+      --   desc = 'Git Blame Line',
+      -- },
+      -- {
+      --   '<leader>gf',
+      --   function()
+      --     Snacks.lazygit.log_file()
+      --   end,
+      --   desc = 'Lazygit Current File History',
+      -- },
+      -- {
+      --   '<leader>gg',
+      --   function()
+      --     Snacks.lazygit()
+      --   end,
+      --   desc = 'Lazygit',
+      -- },
+      -- {
+      --   '<leader>gl',
+      --   function()
+      --     Snacks.lazygit.log()
+      --   end,
+      --   desc = 'Lazygit Log (cwd)',
+      -- },
+      {
+        '<leader>un',
+        function()
+          Snacks.notifier.hide()
+        end,
+        desc = 'Dismiss All Notifications',
+      },
+      {
+        '<c-/>',
+        function()
+          Snacks.terminal()
+        end,
+        desc = 'Toggle Terminal',
+      },
+      {
+        '<c-_>',
+        function()
+          Snacks.terminal()
+        end,
+        desc = 'which_key_ignore',
+      },
+      {
+        ']]',
+        function()
+          Snacks.words.jump(vim.v.count1)
+        end,
+        desc = 'Next Reference',
+        mode = { 'n', 't' },
+      },
+      {
+        '[[',
+        function()
+          Snacks.words.jump(-vim.v.count1)
+        end,
+        desc = 'Prev Reference',
+        mode = { 'n', 't' },
+      },
+      {
+        '<leader>N',
+        desc = 'Neovim News',
+        function()
+          Snacks.win {
+            file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
+            width = 0.6,
+            height = 0.6,
+            wo = {
+              spell = false,
+              wrap = false,
+              signcolumn = 'yes',
+              statuscolumn = ' ',
+              conceallevel = 3,
+            },
+          }
+        end,
+      },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'VeryLazy',
+        callback = function()
+          -- Setup some globals for debugging (lazy-loaded)
+          _G.dd = function(...)
+            Snacks.debug.inspect(...)
+          end
+          _G.bt = function()
+            Snacks.debug.backtrace()
+          end
+          vim.print = _G.dd -- Override print to use snacks for `:=` command
+
+          -- Create some toggle mappings
+          Snacks.toggle.option('spell', { name = 'Spelling' }):map '<leader>us'
+          Snacks.toggle.option('wrap', { name = 'Wrap' }):map '<leader>uw'
+          Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map '<leader>uL'
+          Snacks.toggle.diagnostics():map '<leader>ud'
+          Snacks.toggle.line_number():map '<leader>ul'
+          Snacks.toggle.option('conceallevel', { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map '<leader>uc'
+          Snacks.toggle.treesitter():map '<leader>uT'
+          Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
+          Snacks.toggle.inlay_hints():map '<leader>uh'
+          Snacks.toggle.indent():map '<leader>ug'
+          Snacks.toggle.dim():map '<leader>uD'
+        end,
+      })
+    end,
+  },
+  'EdenEast/nightfox.nvim',
+  'github/copilot.vim',
+  'tpope/vim-fugitive',
+  {
+    'm4xshen/hardtime.nvim',
+    dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
+    opts = {
+      disable_mouse = false,
+      restricted_keys = {
+        ['<Up>'] = { 'n', 'x' },
+        ['<Down>'] = { 'n', 'x' },
+        ['<Left>'] = { 'n', 'x' },
+        ['<Right>'] = { 'n', 'x' },
+      },
+      disabled_keys = {
+        ['<Up>'] = {},
+        ['<Down>'] = {},
+        ['<Left>'] = {},
+        ['<Right>'] = {},
+      },
+    },
+  },
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-lua/plenary.nvim',
+      'nvim-neotest/neotest-python',
+      'nvim-neotest/nvim-nio',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-python' { runner = 'pytest', args = { '--doctest-modules', '--ignore=docs/conf.py' } },
+        },
+      }
+    end,
+  },
+  {
+    'goerz/jupytext.nvim',
+    version = '0.2.0',
+    opts = {}, -- see Options
+  },
+
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
@@ -305,6 +593,10 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.o.timeoutlen
       delay = 0,
+      win = { border = 'single', width = 0.33, col = 0.99 },
+      layout = {
+        width = math.huge,
+      },
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -347,6 +639,9 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>g', group = '[G]it', mode = { 'n' } },
+        { '<leader>e', group = 'T[e]xt', mode = { 'n' } },
+        { '<leader>j', group = '[j]j', mode = { 'n' } },
       },
     },
   },
@@ -412,7 +707,11 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          oldfiles = {
+            cwd_only = true,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -673,7 +972,8 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
+        ruff = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -769,7 +1069,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'ruff format' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -894,7 +1194,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'retrobox'
     end,
   },
 
@@ -973,12 +1273,12 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
