@@ -156,3 +156,13 @@ utf
 treesitter
 lua
 json
+MacOS
+zbirenbaum
+reportGeneralTypeIssues
+reportInvalidTypeArguments
+getitem
+indexables
+OutputType
+HomogeneousSequenceNode
+SequenceType
+HomogeneousSequence
