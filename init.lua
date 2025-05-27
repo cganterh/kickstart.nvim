@@ -497,9 +497,9 @@ require('lazy').setup({
       })
     end,
   },
-  'EdenEast/nightfox.nvim',
+  -- 'EdenEast/nightfox.nvim',
   'github/copilot.vim',
-  'tpope/vim-fugitive',
+  -- 'tpope/vim-fugitive',
   {
     'm4xshen/hardtime.nvim',
     dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
