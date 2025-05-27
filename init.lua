@@ -269,7 +269,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Disable spell checking in the terminal
 vim.api.nvim_create_autocmd('TermOpen', {
   desc = 'Disable spell checking in the terminal',
-  pattern = '*',
   callback = function()
     vim.opt_local.spell = false
   end,
