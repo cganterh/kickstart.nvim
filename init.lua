@@ -500,6 +500,7 @@ require('lazy').setup({
   -- 'EdenEast/nightfox.nvim',
   'github/copilot.vim',
   -- 'tpope/vim-fugitive',
+  'nvim-treesitter/nvim-treesitter-context',
   {
     'm4xshen/hardtime.nvim',
     dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
