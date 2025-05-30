@@ -168,6 +168,7 @@ vim.o.confirm = true
 
 vim.opt.colorcolumn = '72,88'
 vim.opt.autowriteall = true
+vim.o.hidden = false
 
 -- Configure diagnostic
 vim.diagnostic.config {
