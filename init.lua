@@ -194,7 +194,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.opt.spelllang = 'en_us'
 vim.opt.spell = true
 vim.opt.spellcapcheck = ''
-vim.opt.foldmethod = 'indent'
+
+-- Configure folding
+local ft_fold = vim.api.nvim_create_augroup('FT_Fold', { clear = true })
+
+-- Python
+vim.api.nvim_create_autocmd('FileType', {
+  group = ft_fold,
+  pattern = 'python',
+  callback = function()
+    vim.opt_local.foldmethod = 'indent' -- sólo este buffer
+  end,
+})
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
