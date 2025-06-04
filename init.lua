@@ -207,6 +207,14 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Norg
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = 'norg',
+  callback = function()
+    vim.keymap.set('n', '<CR>', '<Plug>(neorg.esupports.hop.hop-link)', { buffer = true })
+  end,
+})
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -553,6 +561,19 @@ require('lazy').setup({
     'goerz/jupytext.nvim',
     version = '0.2.0',
     opts = {}, -- see Options
+  },
+  {
+    'nvim-neorg/neorg',
+    lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+    version = '*', -- Pin Neorg to the latest stable release
+    config = function()
+      require('neorg').setup {
+        load = {
+          ['core.defaults'] = {}, -- Load all the default modules
+          ['core.concealer'] = {}, -- Allows for pretty icons in Neorg files
+        },
+      }
+    end,
   },
 
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
