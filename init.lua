@@ -170,20 +170,6 @@ vim.opt.colorcolumn = '72,88'
 vim.opt.autowriteall = true
 vim.o.hidden = false
 
--- Configure diagnostic
-vim.diagnostic.config {
-  virtual_text = {
-    format = function(diagnostic)
-      return string.format(
-        '[%s: %s] %s',
-        diagnostic.source,
-        diagnostic.code or (diagnostic.user_data and diagnostic.user_data.lsp.code) or '',
-        diagnostic.message
-      )
-    end,
-  },
-}
-
 -- Use internal formatting for bindings like gq.
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
@@ -985,12 +971,21 @@ require('lazy').setup({
           source = 'if_many',
           spacing = 2,
           format = function(diagnostic)
+            local f = function(d)
+              if d.code then
+                return string.format('[%s] %s', d.code, d.message)
+              else
+                return d.message
+              end
+            end
+
             local diagnostic_message = {
-              [vim.diagnostic.severity.ERROR] = diagnostic.message,
-              [vim.diagnostic.severity.WARN] = diagnostic.message,
-              [vim.diagnostic.severity.INFO] = diagnostic.message,
-              [vim.diagnostic.severity.HINT] = diagnostic.message,
+              [vim.diagnostic.severity.ERROR] = f(diagnostic),
+              [vim.diagnostic.severity.WARN] = f(diagnostic),
+              [vim.diagnostic.severity.INFO] = f(diagnostic),
+              [vim.diagnostic.severity.HINT] = f(diagnostic),
             }
+
             return diagnostic_message[diagnostic.severity]
           end,
         },
