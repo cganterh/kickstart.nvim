@@ -543,11 +543,11 @@ require('lazy').setup({
       }
     end,
   },
-  {
-    'goerz/jupytext.nvim',
-    version = '0.2.0',
-    opts = {}, -- see Options
-  },
+  -- {
+  --   'goerz/jupytext.nvim',
+  --   version = '0.2.0',
+  --   opts = {}, -- see Options
+  -- },
   {
     'nvim-neorg/neorg',
     lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
