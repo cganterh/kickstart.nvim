@@ -201,11 +201,6 @@ vim.api.nvim_create_autocmd('Filetype', {
   end,
 })
 
--- Redraw the statusline every minute to update the time
-vim.fn.timer_start(60 * 1000, function()
-  vim.cmd 'redrawstatus'
-end, { ['repeat'] = -1 })
-
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -1261,147 +1256,6 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup {
-        use_icons = vim.g.have_nerd_font,
-        content = {
-          active = function()
-            local MiniStatusline = require 'mini.statusline'
-            local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
-            local git = MiniStatusline.section_git { trunc_width = 40 }
-            local diff = MiniStatusline.section_diff { trunc_width = 75 }
-            local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
-            local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
-            local filename = MiniStatusline.section_filename { trunc_width = 140 }
-            local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
-            local location = MiniStatusline.section_location { trunc_width = 75 }
-            local search = MiniStatusline.section_searchcount { trunc_width = 75 }
-
-            -- Usage of `MiniStatusline.combine_groups()` ensures highlighting and
-            -- correct padding with spaces between groups (accounts for 'missing'
-            -- sections, etc.)
-            return MiniStatusline.combine_groups {
-              { hl = mode_hl, strings = { mode } },
-              { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
-              '%<', -- Mark general truncate point
-              { hl = 'MiniStatuslineFilename', strings = { filename } },
-              '%=', -- End left alignment
-              { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
-              { hl = mode_hl, strings = { search, location } },
-              {
-                hl = mode_hl,
-                strings = {
-                  (function()
-                    local seconds = os.time() - 4 * 60 * 60
-                    local time = os.date('!*t', seconds)
-
-                    if
-                      time.hour == 23 and time.min >= 30
-                      or time.hour == 0 and time.min < 30
-                      or time.hour == 11 and time.min >= 30
-                      or time.hour == 12 and time.min < 30
-                    then
-                      return '󱑊 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 0 and time.min >= 30
-                      or time.hour == 1 and time.min < 30
-                      or time.hour == 12 and time.min >= 30
-                      or time.hour == 13 and time.min < 30
-                    then
-                      return '󱐿 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 1 and time.min >= 30
-                      or time.hour == 2 and time.min < 30
-                      or time.hour == 13 and time.min >= 30
-                      or time.hour == 14 and time.min < 30
-                    then
-                      return '󱑀 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 2 and time.min >= 30
-                      or time.hour == 3 and time.min < 30
-                      or time.hour == 14 and time.min >= 30
-                      or time.hour == 15 and time.min < 30
-                    then
-                      return '󱑁 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 3 and time.min >= 30
-                      or time.hour == 4 and time.min < 30
-                      or time.hour == 15 and time.min >= 30
-                      or time.hour == 16 and time.min < 30
-                    then
-                      return '󱑂 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 4 and time.min >= 30
-                      or time.hour == 5 and time.min < 30
-                      or time.hour == 16 and time.min >= 30
-                      or time.hour == 17 and time.min < 30
-                    then
-                      return '󱑃 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 5 and time.min >= 30
-                      or time.hour == 6 and time.min < 30
-                      or time.hour == 17 and time.min >= 30
-                      or time.hour == 18 and time.min < 30
-                    then
-                      return '󱑄 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 6 and time.min >= 30
-                      or time.hour == 7 and time.min < 30
-                      or time.hour == 18 and time.min >= 30
-                      or time.hour == 19 and time.min < 30
-                    then
-                      return '󱑅 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 7 and time.min >= 30
-                      or time.hour == 8 and time.min < 30
-                      or time.hour == 19 and time.min >= 30
-                      or time.hour == 20 and time.min < 30
-                    then
-                      return '󱑆 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 8 and time.min >= 30
-                      or time.hour == 9 and time.min < 30
-                      or time.hour == 20 and time.min >= 30
-                      or time.hour == 21 and time.min < 30
-                    then
-                      return '󱑇 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 9 and time.min >= 30
-                      or time.hour == 10 and time.min < 30
-                      or time.hour == 21 and time.min >= 30
-                      or time.hour == 22 and time.min < 30
-                    then
-                      return '󱑈 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 10 and time.min >= 30
-                      or time.hour == 11 and time.min < 30
-                      or time.hour == 22 and time.min >= 30
-                      or time.hour == 23 and time.min < 30
-                    then
-                      return '󱑉 ' .. os.date('!%H:%M', seconds)
-                    else
-                      return '󰥕 ' .. os.date('!%H:%M', seconds)
-                    end
-                  end)(),
-                },
-              },
-            }
-          end,
-        },
-      }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -1479,6 +1333,73 @@ require('lazy').setup({
     },
   },
 })
+
+-- Configure the status line and redraw timer
+local statusline = require 'mini.statusline'
+
+local function statusline_clock()
+  local seconds = os.time() - 4 * 60 * 60
+  local time = os.date('!*t', seconds)
+  local icons = {
+    '󱑊',
+    '󱐿',
+    '󱑀',
+    '󱑁',
+    '󱑂',
+    '󱑃',
+    '󱑄',
+    '󱑅',
+    '󱑆',
+    '󱑇',
+    '󱑈',
+    '󱑉',
+  }
+
+  local half = math.floor((time.hour * 60 + time.min) / 30)
+  local index = math.floor(((half + 1) % 24) / 2) + 1
+  local icon = icons[index] or '󰥕'
+
+  return icon .. ' ' .. os.date('!%H:%M', seconds)
+end
+
+local function statusline_active()
+  local MiniStatusline = require 'mini.statusline'
+  local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+  local git = MiniStatusline.section_git { trunc_width = 40 }
+  local diff = MiniStatusline.section_diff { trunc_width = 75 }
+  local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
+  local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
+  local filename = MiniStatusline.section_filename { trunc_width = 140 }
+  local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
+  local location = MiniStatusline.section_location { trunc_width = 75 }
+  local search = MiniStatusline.section_searchcount { trunc_width = 75 }
+
+  return MiniStatusline.combine_groups {
+    { hl = mode_hl, strings = { mode } },
+    { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
+    '%<',
+    { hl = 'MiniStatuslineFilename', strings = { filename } },
+    '%=',
+    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+    { hl = mode_hl, strings = { search, location } },
+    { hl = mode_hl, strings = { statusline_clock() } },
+  }
+end
+
+statusline.setup {
+  use_icons = vim.g.have_nerd_font,
+  content = { active = statusline_active },
+}
+
+---@diagnostic disable-next-line: duplicate-set-field
+statusline.section_location = function()
+  return '%2l:%-2v'
+end
+
+-- Redraw the statusline every minute to update the time
+vim.fn.timer_start(60 * 1000, function()
+  vim.cmd 'redrawstatus'
+end, { ['repeat'] = -1 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
