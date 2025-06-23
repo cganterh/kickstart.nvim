@@ -1336,61 +1336,59 @@ require('lazy').setup({
 
 -- Configure the status line and redraw timer
 local statusline = require 'mini.statusline'
+
+local function statusline_clock()
+  local seconds = os.time() - 4 * 60 * 60
+  local time = os.date('!*t', seconds)
+  local icons = {
+    '󱑊',
+    '󱐿',
+    '󱑀',
+    '󱑁',
+    '󱑂',
+    '󱑃',
+    '󱑄',
+    '󱑅',
+    '󱑆',
+    '󱑇',
+    '󱑈',
+    '󱑉',
+  }
+
+  local half = math.floor((time.hour * 60 + time.min) / 30)
+  local index = math.floor(((half + 1) % 24) / 2) + 1
+  local icon = icons[index] or '󰥕'
+
+  return icon .. ' ' .. os.date('!%H:%M', seconds)
+end
+
+local function statusline_active()
+  local MiniStatusline = require 'mini.statusline'
+  local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+  local git = MiniStatusline.section_git { trunc_width = 40 }
+  local diff = MiniStatusline.section_diff { trunc_width = 75 }
+  local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
+  local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
+  local filename = MiniStatusline.section_filename { trunc_width = 140 }
+  local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
+  local location = MiniStatusline.section_location { trunc_width = 75 }
+  local search = MiniStatusline.section_searchcount { trunc_width = 75 }
+
+  return MiniStatusline.combine_groups {
+    { hl = mode_hl, strings = { mode } },
+    { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
+    '%<',
+    { hl = 'MiniStatuslineFilename', strings = { filename } },
+    '%=',
+    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+    { hl = mode_hl, strings = { search, location } },
+    { hl = mode_hl, strings = { statusline_clock() } },
+  }
+end
+
 statusline.setup {
   use_icons = vim.g.have_nerd_font,
-  content = {
-    active = function()
-      local MiniStatusline = require 'mini.statusline'
-      local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
-      local git = MiniStatusline.section_git { trunc_width = 40 }
-      local diff = MiniStatusline.section_diff { trunc_width = 75 }
-      local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
-      local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
-      local filename = MiniStatusline.section_filename { trunc_width = 140 }
-      local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
-      local location = MiniStatusline.section_location { trunc_width = 75 }
-      local search = MiniStatusline.section_searchcount { trunc_width = 75 }
-
-      return MiniStatusline.combine_groups {
-        { hl = mode_hl, strings = { mode } },
-        { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
-        '%<',
-        { hl = 'MiniStatuslineFilename', strings = { filename } },
-        '%=',
-        { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
-        { hl = mode_hl, strings = { search, location } },
-        {
-          hl = mode_hl,
-          strings = {
-            (function()
-              local seconds = os.time() - 4 * 60 * 60
-              local time = os.date('!*t', seconds)
-              local icons = {
-                '󱑊',
-                '󱐿',
-                '󱑀',
-                '󱑁',
-                '󱑂',
-                '󱑃',
-                '󱑄',
-                '󱑅',
-                '󱑆',
-                '󱑇',
-                '󱑈',
-                '󱑉',
-              }
-
-              local half = math.floor((time.hour * 60 + time.min) / 30)
-              local index = math.floor(((half + 1) % 24) / 2) + 1
-              local icon = icons[index] or '󰥕'
-
-              return icon .. ' ' .. os.date('!%H:%M', seconds)
-            end)(),
-          },
-        },
-      }
-    end,
-  },
+  content = { active = statusline_active },
 }
 
 ---@diagnostic disable-next-line: duplicate-set-field
