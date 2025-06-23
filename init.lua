@@ -1298,94 +1298,26 @@ require('lazy').setup({
                   (function()
                     local seconds = os.time() - 4 * 60 * 60
                     local time = os.date('!*t', seconds)
+                    local icons = {
+                      '󱑊',
+                      '󱐿',
+                      '󱑀',
+                      '󱑁',
+                      '󱑂',
+                      '󱑃',
+                      '󱑄',
+                      '󱑅',
+                      '󱑆',
+                      '󱑇',
+                      '󱑈',
+                      '󱑉',
+                    }
 
-                    if
-                      time.hour == 23 and time.min >= 30
-                      or time.hour == 0 and time.min < 30
-                      or time.hour == 11 and time.min >= 30
-                      or time.hour == 12 and time.min < 30
-                    then
-                      return '󱑊 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 0 and time.min >= 30
-                      or time.hour == 1 and time.min < 30
-                      or time.hour == 12 and time.min >= 30
-                      or time.hour == 13 and time.min < 30
-                    then
-                      return '󱐿 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 1 and time.min >= 30
-                      or time.hour == 2 and time.min < 30
-                      or time.hour == 13 and time.min >= 30
-                      or time.hour == 14 and time.min < 30
-                    then
-                      return '󱑀 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 2 and time.min >= 30
-                      or time.hour == 3 and time.min < 30
-                      or time.hour == 14 and time.min >= 30
-                      or time.hour == 15 and time.min < 30
-                    then
-                      return '󱑁 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 3 and time.min >= 30
-                      or time.hour == 4 and time.min < 30
-                      or time.hour == 15 and time.min >= 30
-                      or time.hour == 16 and time.min < 30
-                    then
-                      return '󱑂 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 4 and time.min >= 30
-                      or time.hour == 5 and time.min < 30
-                      or time.hour == 16 and time.min >= 30
-                      or time.hour == 17 and time.min < 30
-                    then
-                      return '󱑃 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 5 and time.min >= 30
-                      or time.hour == 6 and time.min < 30
-                      or time.hour == 17 and time.min >= 30
-                      or time.hour == 18 and time.min < 30
-                    then
-                      return '󱑄 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 6 and time.min >= 30
-                      or time.hour == 7 and time.min < 30
-                      or time.hour == 18 and time.min >= 30
-                      or time.hour == 19 and time.min < 30
-                    then
-                      return '󱑅 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 7 and time.min >= 30
-                      or time.hour == 8 and time.min < 30
-                      or time.hour == 19 and time.min >= 30
-                      or time.hour == 20 and time.min < 30
-                    then
-                      return '󱑆 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 8 and time.min >= 30
-                      or time.hour == 9 and time.min < 30
-                      or time.hour == 20 and time.min >= 30
-                      or time.hour == 21 and time.min < 30
-                    then
-                      return '󱑇 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 9 and time.min >= 30
-                      or time.hour == 10 and time.min < 30
-                      or time.hour == 21 and time.min >= 30
-                      or time.hour == 22 and time.min < 30
-                    then
-                      return '󱑈 ' .. os.date('!%H:%M', seconds)
-                    elseif
-                      time.hour == 10 and time.min >= 30
-                      or time.hour == 11 and time.min < 30
-                      or time.hour == 22 and time.min >= 30
-                      or time.hour == 23 and time.min < 30
-                    then
-                      return '󱑉 ' .. os.date('!%H:%M', seconds)
-                    else
-                      return '󰥕 ' .. os.date('!%H:%M', seconds)
-                    end
+                    local half = math.floor((time.hour * 60 + time.min) / 30)
+                    local index = math.floor(((half + 1) % 24) / 2) + 1
+                    local icon = icons[index] or '󰥕'
+
+                    return icon .. ' ' .. os.date('!%H:%M', seconds)
                   end)(),
                 },
               },
