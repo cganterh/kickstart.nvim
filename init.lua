@@ -129,7 +129,9 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Keep signcolumn on by default
-vim.o.signcolumn = 'yes'
+vim.o.signcolumn = 'yes:1'
+vim.o.numberwidth = 2
+vim.o.foldcolumn = '0'
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -621,7 +623,12 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.o.timeoutlen
       delay = 0,
-      win = { border = 'single', width = 0.33, col = 0.99 },
+      win = {
+        border = 'single',
+        width = 0.6,
+        position = 'top',
+        col = 0.5,
+      },
       layout = {
         width = math.huge,
       },
@@ -1364,15 +1371,15 @@ end
 
 local function statusline_active()
   local MiniStatusline = require 'mini.statusline'
-  local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
-  local git = MiniStatusline.section_git { trunc_width = 40 }
-  local diff = MiniStatusline.section_diff { trunc_width = 75 }
-  local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
-  local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
-  local filename = MiniStatusline.section_filename { trunc_width = 140 }
-  local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
-  local location = MiniStatusline.section_location { trunc_width = 75 }
-  local search = MiniStatusline.section_searchcount { trunc_width = 75 }
+  local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 40 }
+  local git = MiniStatusline.section_git { trunc_width = 20 }
+  local diff = MiniStatusline.section_diff { trunc_width = 20 }
+  local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 20 }
+  local lsp = MiniStatusline.section_lsp { trunc_width = 30 }
+  local filename = MiniStatusline.section_filename { trunc_width = 50 }
+  local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 20 }
+  local location = MiniStatusline.section_location { trunc_width = 20 }
+  local search = MiniStatusline.section_searchcount { trunc_width = 20 }
 
   return MiniStatusline.combine_groups {
     { hl = mode_hl, strings = { mode } },
