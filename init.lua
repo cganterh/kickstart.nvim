@@ -194,7 +194,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- Norg
-vim.api.nvim_create_autocmd('Filetype', {
+vim.api.nvim_create_autocmd('FileType', {
   pattern = 'norg',
   callback = function()
     vim.keymap.set('n', '<CR>', '<Plug>(neorg.esupports.hop.hop-link)', { buffer = true })
