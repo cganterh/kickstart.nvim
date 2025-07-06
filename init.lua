@@ -98,7 +98,7 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
-vim.o.number = false
+vim.o.number = true
 vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -621,14 +621,13 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.o.timeoutlen
       delay = 0,
-      win = {
+      window = {
         border = 'single',
-        width = 0.6,
         position = 'top',
-        col = 0.5,
       },
       layout = {
-        width = math.huge,
+        width = { min = 20, max = 60 },
+        align = 'center',
       },
       icons = {
         -- set icon mappings to true if you have a Nerd Font
