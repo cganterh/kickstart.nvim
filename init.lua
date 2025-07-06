@@ -98,7 +98,7 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
-vim.o.number = true
+vim.o.number = false
 vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -1370,24 +1370,15 @@ end
 local function statusline_active()
   local MiniStatusline = require 'mini.statusline'
   local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 40 }
-  local git = MiniStatusline.section_git { trunc_width = 20 }
-  local diff = MiniStatusline.section_diff { trunc_width = 20 }
-  local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 20 }
-  local lsp = MiniStatusline.section_lsp { trunc_width = 30 }
   local filename = MiniStatusline.section_filename { trunc_width = 50 }
-  local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 20 }
   local location = MiniStatusline.section_location { trunc_width = 20 }
-  local search = MiniStatusline.section_searchcount { trunc_width = 20 }
 
   return MiniStatusline.combine_groups {
     { hl = mode_hl, strings = { mode } },
-    { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
     '%<',
     { hl = 'MiniStatuslineFilename', strings = { filename } },
     '%=',
-    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
-    { hl = mode_hl, strings = { search, location } },
-    { hl = mode_hl, strings = { statusline_clock() } },
+    { hl = mode_hl, strings = { location } },
   }
 end
 
