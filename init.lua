@@ -98,11 +98,8 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
--- Make line numbers default
-vim.o.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
-vim.o.relativenumber = true
+vim.o.number = false
+vim.o.relativenumber = false
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -130,8 +127,9 @@ vim.o.smartcase = true
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes:1'
-vim.o.numberwidth = 2
+vim.o.numberwidth = 1
 vim.o.foldcolumn = '0'
+vim.o.wrap = false
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -326,7 +324,7 @@ require('lazy').setup({
       picker = { enabled = true },
       quickfile = { enabled = true },
       scroll = { enabled = false },
-      statuscolumn = { enabled = true },
+      statuscolumn = { enabled = false },
       words = { enabled = true },
       styles = {
         notification = {
