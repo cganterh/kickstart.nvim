@@ -98,10 +98,7 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
--- Make line numbers default
-vim.o.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
+vim.o.number = false
 vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -129,7 +126,10 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Keep signcolumn on by default
-vim.o.signcolumn = 'yes'
+vim.o.signcolumn = 'yes:1'
+vim.o.numberwidth = 1
+vim.o.foldcolumn = '0'
+vim.o.wrap = false
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -324,7 +324,7 @@ require('lazy').setup({
       picker = { enabled = true },
       quickfile = { enabled = true },
       scroll = { enabled = false },
-      statuscolumn = { enabled = true },
+      statuscolumn = { enabled = false },
       words = { enabled = true },
       styles = {
         notification = {
@@ -621,9 +621,13 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.o.timeoutlen
       delay = 0,
-      win = { border = 'single', width = 0.33, col = 0.99 },
+      win = {
+        border = 'single',
+        position = 'top',
+      },
       layout = {
-        width = math.huge,
+        width = { min = 20, max = 60 },
+        align = 'center',
       },
       icons = {
         -- set icon mappings to true if you have a Nerd Font
@@ -1364,25 +1368,16 @@ end
 
 local function statusline_active()
   local MiniStatusline = require 'mini.statusline'
-  local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
-  local git = MiniStatusline.section_git { trunc_width = 40 }
-  local diff = MiniStatusline.section_diff { trunc_width = 75 }
-  local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
-  local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
-  local filename = MiniStatusline.section_filename { trunc_width = 140 }
-  local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
-  local location = MiniStatusline.section_location { trunc_width = 75 }
-  local search = MiniStatusline.section_searchcount { trunc_width = 75 }
+  local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 40 }
+  local filename = MiniStatusline.section_filename { trunc_width = 50 }
+  local location = MiniStatusline.section_location { trunc_width = 20 }
 
   return MiniStatusline.combine_groups {
     { hl = mode_hl, strings = { mode } },
-    { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
     '%<',
     { hl = 'MiniStatuslineFilename', strings = { filename } },
     '%=',
-    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
-    { hl = mode_hl, strings = { search, location } },
-    { hl = mode_hl, strings = { statusline_clock() } },
+    { hl = mode_hl, strings = { location } },
   }
 end
 
